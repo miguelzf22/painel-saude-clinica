@@ -1,0 +1,149 @@
+Desafio Prático: Painel de Saúde da Clínica 3.0 (Atividade com Pontuação Extra)
+
+
+Modalidade: Em equipes (as mesmas equipes já definidas para o projeto final)
+
+Objetivo: Integrar a modelagem de Herança com Classes ES6+, Modularização, Manipulação Dinâmica do DOM e consumo de dados externos via API / JSON.
+1. Contexto e Histórico da Aplicação
+
+Nas etapas anteriores, desenvolvemos o protótipo funcional do Painel de Saúde da Clínica:
+
+    Painel 1.0: Processamento de uma lista estática de clientes em array com cálculo de IMC e classificação via laço de repetição.
+
+    Painel 2.0: Evolução para um sistema interativo com formulário, interceptação de envio (event.preventDefault()) e modelagem orientada a objetos com a classe base Cliente e a manipulação do DOM.
+
+    Observação Importante sobre a Etapa Anterior: No Painel 2.0, implementamos as classes de forma conjunta em um único arquivo de script. Conforme orientado em aula, o primeiro passo deste desafio consiste em refatorar o código, separando cada classe em seu respectivo arquivo com export default e import.
+
+Agora, a diretoria da Clínica de Bem-Estar solicitou duas melhorias fundamentais para o atendimento diário:
+
+    Diferenciação no Atendimento: Atender pacientes Particulares e pacientes com Convênio.
+
+    Localização Automática: Consulta automática de endereço a partir do CEP informado, agilizando o cadastro na recepção.
+
+
+2. Estrutura Modular de Arquivos
+
+A aplicação não deve conter todo o código em um arquivo único. A equipe deve organizar o projeto na seguinte arquitetura modular:
+
+    index.html: Interface visual contendo o formulário de cadastro, a tabela de relatórios e a seção explicativa sobre JSON.
+
+    style.css: Estilização visual da página, formulário e tabela zebrada.
+
+    Paciente.js: Superclasse base com atributos privados e regras de negócio de saúde.
+
+    PacienteConvenio.js: Subclasse especialista herdando via extends e utilizando super().
+
+    app.js: Script principal que importa as classes, escuta os eventos do formulário, consome a API do ViaCEP e atualiza o DOM.
+
+
+3. Requisitos Técnicos
+A. Camada de Orientação a Objetos (Classes ES6+)
+
+    Superclasse Paciente (arquivo Paciente.js):
+
+        Declarar os atributos privados: #nome, #altura, #peso e #cidade.
+
+        Construtor recebendo os dados com valores padrão e inicializando os atributos.
+
+        Métodos getters e setters para manipulação dos atributos.
+
+        Método calcularIMC() que retorna o cálculo: peso / (altura * altura).
+
+        Método definirClassificacao() que retorna o diagnóstico textual com base nas faixas da OMS (Abaixo do peso, Peso normal, Sobrepeso, Obesidade).
+
+        Exportar a classe como padrão: export default Paciente;
+
+    Subclasse PacienteConvenio (arquivo PacienteConvenio.js):
+
+        Herdar de Paciente utilizando a palavra-chave extends.
+
+        Declarar o atributo privado específico: #carteirinha.
+
+        Construtor chamando obrigatoriamente super(nome, altura, peso, cidade) antes de inicializar this.#carteirinha.
+
+        Métodos getCarteirinha() e setCarteirinha().
+
+        Exportar a classe como padrão: export default PacienteConvenio;
+
+B. Interface e Integração com API ViaCEP (HTML5 e app.js)
+
+    Formulário de Cadastro:
+
+        Inserir um campo select com as opções: Particular e Convênio.
+
+        Inserir um campo de texto para o número da carteirinha (habilitado quando "Convênio" for selecionado).
+
+        Inserir um campo para o CEP do paciente e um campo somente leitura para a Cidade/UF.
+
+    Busca Automática de CEP (ViaCEP):
+
+        Utilizar a função assíncrona com fetch e async/await para consultar a URL: https://viacep.com.br/ws/${cepLimpo}/json/
+
+        Validação com if / else:
+
+            Verificar se o CEP possui exatamente 8 dígitos numéricos. Se for inválido, alertar o usuário com alert() e limpar o campo.
+
+            Verificar se a resposta retornou dados.erro. Se o CEP não existir, avisar o usuário.
+
+            Caso o CEP seja válido, preencher automaticamente o campo de Cidade/UF com os dados retornados.
+
+        Disparar a consulta quando o usuário terminar de digitar o CEP (evento blur).
+
+    Cadastro e Tabela (DOM):
+
+        Interceptar o envio do formulário no evento submit com event.preventDefault().
+
+        Validar com if / else se os campos numéricos são positivos e preenchidos corretamente.
+
+        Instanciar new Paciente(...) ou new PacienteConvenio(...) conforme a seleção.
+
+        Inserir dinamicamente uma nova linha (tr) no tbody da tabela exibindo: Nome, Tipo de Paciente, Cidade/UF, Altura, Peso, IMC formatado com 2 casas decimais e Classificação de Saúde.
+
+        Limpar o formulário (form.reset()) e focar novamente no campo Nome.
+
+C. Seção Didática: Painel do Desenvolvedor (Explicando o JSON)
+
+Abaixo da tabela, cada equipe deve incluir um bloco de texto explicativo respondendo de forma clara:
+
+    O que é JSON? Explicar como os dados trafegam estruturados em pares de chave e valor.
+
+    Como a requisição funciona no navegador? Explicar o papel do fetch() em buscar a informação de forma assíncrona na internet sem recarregar a tela.
+
+    Como o JavaScript utiliza a resposta? Explicar o método .json() transformando o texto recebido em um objeto acessível pelo código.
+
+
+4. Cronograma de Desenvolvimento e Avaliação
+
+    Aula 1 (Quinta-feira):
+
+        Apresentação do desafio e alinhamento dos requisitos.
+
+        Validação da separação dos arquivos modulares (Paciente.js, PacienteConvenio.js e app.js).
+
+        Implementação da herança com extends / super() e estrutura do formulário no laboratório.
+
+    Aula 2 (Continuidade na próxima semana):
+
+        Implementação da integração com o ViaCEP, validações com if / else e injeção completa na tabela do DOM.
+
+        Elaboração do bloco explicativo sobre JSON.
+
+        Demonstração prática do sistema funcionando no laboratório para atribuição da pontuação extra.
+
+    Flexibilização — Provão Paulista e OAE:
+
+        Alunos que estiverem envolvidos na realização do Provão Paulista e não conseguirem demonstrar na data regular poderão realizar a apresentação e entrega durante o horário de Atendimento ao Aluno (OAE) nas duas últimas semanas de novembro, junto com o fechamento das avaliações do 4º bimestre.
+
+5. Critérios de Avaliação (Pontos Extras)
+
+    Modularização e POO (35%): Separação correta dos arquivos, encapsulamento (#) e herança (extends / super).
+
+    Manipulação do DOM (30%): Inserção dinâmica das linhas na tabela sem recarregar a página (preventDefault).
+
+    Integração ViaCEP e Validações (20%): Consulta funcional da API e validação de dados utilizando estruturas condicionais if / else.
+
+    Painel Explicativo do JSON (10%): Clareza conceitual na explicação do JSON inserida na interface da página.
+
+    Trabalho em Equipe (5%): Organização do código no VS Code e cooperação de todos os membros.
+
+Bons Estudos!
